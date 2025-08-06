@@ -1,0 +1,1 @@
+# Serverless-Image-Resizer-using-AWS-S3-Lambda-Event-Triggers
