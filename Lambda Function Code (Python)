@@ -1,0 +1,33 @@
+from PIL import Image
+import boto3
+import io
+
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    key = event['Records'][0]['s3']['object']['key']
+    
+    # Download original image
+    original_image = s3.get_object(Bucket=bucket, Key=key)['Body'].read()
+    image = Image.open(io.BytesIO(original_image))
+    
+    # Resize image
+    image.thumbnail((128, 128))
+    
+    buffer = io.BytesIO()
+    image.save(buffer, format='PNG')
+    buffer.seek(0)
+    
+    # Upload to thumbnail bucket
+    s3.put_object(
+        Bucket='imag-thumbnails',
+        Key=key,
+        Body=buffer,
+        ContentType='image/png'
+    )
+
+    return {
+        'statusCode': 200,
+        'body': f"Thumbnail saved as {key}"
+    }
