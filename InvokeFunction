@@ -1,0 +1,7 @@
+If not, run this in the terminal (replace with your function name and bucket):
+aws lambda add-permission \
+  --function-name resizeImageLambda \
+  --principal s3.amazonaws.com \
+  --statement-id s3invoke \
+  --action "lambda:InvokeFunction" \
+  --source-arn arn:aws:s3:::image-uploads-originalbucket
